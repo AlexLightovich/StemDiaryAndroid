@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">StemDiary</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Новости</string>
+    <string name="title_dashboard">Расписание</string>
+    <string name="title_info">Информация</string>
+    <string name="title_shop">Магазин</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>
