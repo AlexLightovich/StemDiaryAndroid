@@ -20,6 +20,10 @@
         android:id="@+id/navigation_info"
         android:icon="@android:drawable/ic_dialog_info"
         android:title="@string/title_info" />
+    <item
+        android:id="@+id/navigation_moderation"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:title="@string/title_info" />
 
 
 </menu>

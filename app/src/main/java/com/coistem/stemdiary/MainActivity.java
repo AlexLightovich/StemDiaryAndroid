@@ -1,5 +1,7 @@
 package com.coistem.stemdiary;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -8,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private InfoFragment infoFragment;
@@ -18,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean isNewsVisible;
     private boolean isShopVisible;
     public static String userLogin = "";
+    private int backClicks = 0;
+    private SharedPreferences sp;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -96,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         infoFragment = new InfoFragment();
         newsFragment = new NewsFragment();
         shopFragment = new ShopFragment();
+        sp = getSharedPreferences("logins",MODE_PRIVATE);
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.container, newsFragment);
@@ -110,4 +117,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+    @Override
+    public void onBackPressed() {
+        backClicks++;
+        if(backClicks==1) {
+            Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
+        }
+        if(backClicks>=2){
+            finishAffinity();
+        }
+    }
 }

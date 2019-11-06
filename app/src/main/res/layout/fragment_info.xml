@@ -67,7 +67,7 @@
         app:layout_constraintTop_toBottomOf="@+id/nameText" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/exitButton"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -103,5 +103,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/coinsText"
         app:layout_constraintVertical_bias="0.3" />
+
+    <Button
+        android:id="@+id/vkAuth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="авторизация вк"
+        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coinsText" />
 
 </android.support.constraint.ConstraintLayout>
