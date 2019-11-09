@@ -12,7 +12,7 @@
         <item name="android:windowBackground">@color/custom_theme_color</item>
         <item name="android:colorBackground">@color/custom_theme_color</item>
         <item name="colorPrimaryDark">#000</item>
-        <item name="colorPrimary">#212121</item>
+        <item name="colorPrimary">#9765a5</item>
     </style>
 
 </resources>

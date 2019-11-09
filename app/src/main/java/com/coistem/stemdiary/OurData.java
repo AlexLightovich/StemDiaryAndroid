@@ -18,6 +18,7 @@ public class OurData {
 
     public static  String[] title;
     public static String[] imgUrls;
+    public static String[] dates;
 
 
 

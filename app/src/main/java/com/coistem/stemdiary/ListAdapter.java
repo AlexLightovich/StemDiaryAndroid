@@ -33,16 +33,19 @@ public class ListAdapter extends RecyclerView.Adapter {
     private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView itemTextView;
         private ImageView itemImageView;
+        private TextView itemDateView;
 
         public ListViewHolder(View itemView) {
             super(itemView);
             itemTextView = (TextView) itemView.findViewById(R.id.newsText);
             itemImageView = (ImageView) itemView.findViewById(R.id.newsImage);
+            itemDateView = (TextView) itemView.findViewById(R.id.newsDate);
             itemView.setOnClickListener(this);
         }
         public void bindView(int position) {
             itemTextView.setText(OurData.title[position]);
             Picasso.with(itemView.getContext()).load(OurData.imgUrls[position]).error(R.drawable.ic_example_avatar).into(itemImageView);
+            itemDateView.setText(OurData.dates[position]);
         }
 
         public void onClick(View view) {

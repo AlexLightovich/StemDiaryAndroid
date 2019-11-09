@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,8 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isShopVisible;
     public static String userLogin = "";
     private int backClicks = 0;
-    private SharedPreferences sp;
-    RecyclerView recyclerView;
+    private static SharedPreferences sp;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                         //replaced news fragment
                         FragmentManager supportFragmentManager = getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.container, newsFragment);
+                        fragmentTransaction.replace(R.id.main_content, newsFragment);
                         fragmentTransaction.commit();
                         isTimeTableVisible = false;
                         isShopVisible = false;
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                         isTimeTableVisible = false;
                         FragmentManager supportFragmentManager = getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.container, shopFragment);
+                        fragmentTransaction.replace(R.id.main_content, shopFragment);
                         fragmentTransaction.commit();
                     }
                     return true;
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         isTimeTableVisible = false;
                         FragmentManager supportFragmentManager = getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.container, infoFragment);
+                        fragmentTransaction.replace(R.id.main_content, infoFragment);
                         fragmentTransaction.commit();
                     }
                     return true;
@@ -121,84 +121,31 @@ public class MainActivity extends AppCompatActivity {
         newsFragment = new NewsFragment();
         shopFragment = new ShopFragment();
         sp = getSharedPreferences("logins",MODE_PRIVATE);
+        GetUserInfo.avatarUrl = sp.getString("avatarUrl","null");
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
-//        fragmentTransaction.add(R.id.container, newsFragment);
-//        fragmentTransaction.commit();
+        fragmentTransaction.add(R.id.main_content, newsFragment);
+        fragmentTransaction.commit();
         isTimeTableVisible = false;
         isShopVisible = false;
         isNewsVisible = true;
         isInfoVisible = false;
-        setToolbar("ExitUntilCollapsed");
-        vkRequest();
-        recyclerView = findViewById(R.id.listRecyclerView);
         GetUserInfo getUserInfo = new GetUserInfo();
         getUserInfo.parseJson(userLogin);
+        if(!GetUserInfo.userIsAdmin) {
+            navView.getMenu().removeItem(R.id.navigation_moderation);
+        }
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }
-    private ArrayList<String> newsText = new ArrayList<>();
-    private ArrayList<String> imageURLs = new ArrayList<>();
-
-    public void vkRequest() {
-        VKRequest request = VKApi.wall().get(VKParameters.from(VKApiConst.OWNER_ID,-113376999,"domain","coistem",VKApiConst.COUNT,6));
-        request.executeWithListener(new VKRequest.VKRequestListener() {
-            @Override
-            public void onComplete(VKResponse response) {
-                super.onComplete(response);
-                try {
-                    JSONArray items = response.json.getJSONObject("response").getJSONArray("items");
-                    HashMap<String, Object> map = new HashMap<>();
-                    for(int i = 1; i<6; i++) {
-                        JSONObject jsonObject = items.getJSONObject(i);
-                        JSONArray attachments = jsonObject.getJSONArray("attachments");
-                        JSONObject jsonObject1 = attachments.getJSONObject(0);
-                        if(jsonObject1.getString("type").equals("photo")) {
-                            JSONObject photos = jsonObject1.getJSONObject("photo");
-                            String url = photos.getString("photo_807");
-                            System.out.println(url);
-                            imageURLs.add(url);
-
-                        } else {
-                            imageURLs.add("nothing");
-                        }
-                        String text = jsonObject.getString("text");
-                        System.out.println(text);
-                        newsText.add(text);
-                    }
-                    OurData.title = new String[newsText.size()];
-                    OurData.title = newsText.toArray(OurData.title);
-                    OurData.imgUrls = new String[imageURLs.size()];
-                    OurData.imgUrls = imageURLs.toArray(OurData.imgUrls);
-                    ListAdapter listAdapter = new ListAdapter();
-                    recyclerView.setAdapter(listAdapter);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
-                    recyclerView.setLayoutManager(layoutManager);
-                    for(int i  = 0; i<OurData.title.length; i++) {
-                        System.out.println("START");
-                        System.out.println(OurData.title[i]);
-                        System.out.println("END");
-                    }
-                    for(int i  = 0; i<OurData.imgUrls.length; i++) {
-                        System.out.println("START");
-                        System.out.println(OurData.imgUrls[i]);
-                        System.out.println("END");
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
 
-            }
-        });
+    public void savePreferences(String key, String value) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(key,value);
+        editor.apply();
     }
 
-
-    public void setToolbar(@NonNull String title) {
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsingToolbarLayout);
-        collapsingToolbar.setTitle(GetUserInfo.userName);
-    }
 
     @Override
     public void onBackPressed() {
