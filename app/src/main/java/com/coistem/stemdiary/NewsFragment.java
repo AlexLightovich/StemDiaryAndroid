@@ -53,6 +53,7 @@ public class NewsFragment extends Fragment {
     private ArrayList<String> newsDates = new ArrayList<>();
 
     public void vkRequest() {
+        System.out.println("YA VOSHEL V VK REQUEST");
         VKRequest request = VKApi.wall().get(VKParameters.from(VKApiConst.OWNER_ID,-113376999,"domain","coistem",VKApiConst.COUNT,6));
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override

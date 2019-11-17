@@ -34,10 +34,12 @@ public class MainActivity extends AppCompatActivity {
     private InfoFragment infoFragment;
     private NewsFragment newsFragment;
     private ShopFragment shopFragment;
+    private ModerationFragment moderationFragment;
     private boolean isInfoVisible;
     private boolean isTimeTableVisible;
     private boolean isNewsVisible;
     private boolean isShopVisible;
+    private boolean isModerationVisible;
     public static String userLogin = "";
     private int backClicks = 0;
     private static SharedPreferences sp;
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(R.id.main_content, newsFragment);
                         fragmentTransaction.commit();
                         isTimeTableVisible = false;
+                        isModerationVisible = false;
                         isShopVisible = false;
                         isNewsVisible = true;
                         isInfoVisible = false;
@@ -71,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
                         // replaced timetable fragment
                         isTimeTableVisible = true;
                         isNewsVisible = false;
+                        isModerationVisible = false;
                         isShopVisible = false;
                         isInfoVisible = false;
                     }
@@ -83,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                         isInfoVisible = false;
                         isShopVisible = true;
                         isNewsVisible = false;
+                        isModerationVisible = false;
                         isTimeTableVisible = false;
                         FragmentManager supportFragmentManager = getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
@@ -98,10 +103,27 @@ public class MainActivity extends AppCompatActivity {
                         isInfoVisible = true;
                         isNewsVisible = false;
                         isShopVisible = false;
+                        isModerationVisible = false;
                         isTimeTableVisible = false;
                         FragmentManager supportFragmentManager = getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
                         fragmentTransaction.replace(R.id.main_content, infoFragment);
+                        fragmentTransaction.commit();
+                    }
+                    return true;
+
+                case R.id.navigation_moderation:
+                    if(isModerationVisible) {
+
+                    } else {
+                        isInfoVisible = false;
+                        isModerationVisible = true;
+                        isNewsVisible = false;
+                        isShopVisible = false;
+                        isTimeTableVisible = false;
+                        FragmentManager supportFragmentManager = getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.main_content, moderationFragment);
                         fragmentTransaction.commit();
                     }
                     return true;
@@ -120,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
         infoFragment = new InfoFragment();
         newsFragment = new NewsFragment();
         shopFragment = new ShopFragment();
+        moderationFragment = new ModerationFragment();
         sp = getSharedPreferences("logins",MODE_PRIVATE);
         GetUserInfo.avatarUrl = sp.getString("avatarUrl","null");
         FragmentManager supportFragmentManager = getSupportFragmentManager();
@@ -129,12 +152,13 @@ public class MainActivity extends AppCompatActivity {
         isTimeTableVisible = false;
         isShopVisible = false;
         isNewsVisible = true;
+        isModerationVisible = false;
         isInfoVisible = false;
         GetUserInfo getUserInfo = new GetUserInfo();
         getUserInfo.parseJson(userLogin);
-        if(!GetUserInfo.userIsAdmin) {
-            navView.getMenu().removeItem(R.id.navigation_moderation);
-        }
+//        if(!GetUserInfo.userAccessType.equals("admin")) {
+//            navView.getMenu().removeItem(R.id.navigation_moderation);
+//        }
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }

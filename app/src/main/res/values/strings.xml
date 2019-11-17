@@ -9,5 +9,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="exit_message">Нажмите кнопку \"Назад\" еще раз, чтобы выйти</string>
+    <string-array name="entries">
+        <item>Администратор</item>
+        <item>Модератор</item>
+        <item>Учитель</item>
+        <item>Ученик</item>
+    </string-array>
 
 </resources>
