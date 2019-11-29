@@ -1,5 +1,7 @@
 package com.coistem.stemdiary;
 
+import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,34 +23,7 @@ public class GetUserInfo {
     public static int moderationUserCounterCoins;
     public static String moderationUserAccessType;
 
-
-
-    private String jsonFile = "{\n" +
-            "   \"eremin15\":[{\n" +
-            "     \"name\":\"Vadim\",\n" +
-            "     \"surname\": \"Eremin\",\n" +
-            "     \"thirdname\":\"Kto-to tamovich\",\n" +
-            "     \"coins\": \"12223\",\n" +
-            "\t \"accessType\":\"student\"}],\n" +
-            "   \"yeliseyenko23\":[{\n" +
-            "     \"name\":\"Yuriy\",\n" +
-            "     \"surname\": \"Yeliseyenko\",\n" +
-            "     \"thirdname\":\"Andreevich\",\n" +
-            "     \"coins\": \"13242\",\n" +
-            "\t \"accessType\":\"admin\"}],\n" +
-            "   \"vasilev75\":[{\n" +
-            "     \"name\":\"Alexey\",\n" +
-            "     \"surname\": \"Vasilev\",\n" +
-            "     \"thirdname\":\"Il'ich\",\n" +
-            "     \"coins\": \"1337\",\n" +
-            "\t \"accesType\":\"teacher\"}],\n" +
-            "   \"user\":[{\n" +
-            "     \"name\":\"User\",\n" +
-            "     \"surname\": \"Defoltnniy\",\n" +
-            "     \"thirdname\":\"Alexeevich\",\n" +
-            "     \"coins\": \"1337228322\",\n" +
-            "\t \"accessType\":\"admin\"}]\n" +
-            "}";
+    private String jsonFile;
 
     public void parseJson(String userLogin) {
         try {
@@ -73,15 +48,27 @@ public class GetUserInfo {
             JSONObject jsonObject = new JSONObject(jsonFile);
             JSONArray jsonArray = jsonObject.getJSONArray(login);
             JSONObject userInfo = jsonArray.getJSONObject(0);
-            userName = userInfo.getString("name");
-            userCoins = userInfo.getString("coins");
-            userSurname = userInfo.getString("surname");
-            userThirdName = userInfo.getString("thirdname");
-            userCounterCoins = Integer.parseInt(userCoins);
+            moderationUserName = userInfo.getString("name");
+            moderationUserCoins = userInfo.getString("coins");
+            moderationUserSurname = userInfo.getString("surname");
+            JSONObject jo = new JSONObject();
+//            userThirdName = userInfo.getString("thirdname");
+            moderationUserCounterCoins = Integer.parseInt(userCoins);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         System.out.println(jsonFile);
     }
+
+    public void prepareJsonFile(Context context, String login) {
+        JSONFileEditing jsonFileEditing = new JSONFileEditing();
+        jsonFile = jsonFileEditing.getJsonData(context);
+        System.out.println("JSOOOOOOOOOOOOOOOOOON"+jsonFile);
+        parseJson(login);
+    }
+
+
+
+
 
 }

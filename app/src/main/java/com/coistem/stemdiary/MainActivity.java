@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKParameters;
@@ -155,14 +156,13 @@ public class MainActivity extends AppCompatActivity {
         isModerationVisible = false;
         isInfoVisible = false;
         GetUserInfo getUserInfo = new GetUserInfo();
-        getUserInfo.parseJson(userLogin);
+        getUserInfo.prepareJsonFile(MainActivity.this,userLogin);
 //        if(!GetUserInfo.userAccessType.equals("admin")) {
 //            navView.getMenu().removeItem(R.id.navigation_moderation);
 //        }
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }
-
 
     public void savePreferences(String key, String value) {
         SharedPreferences.Editor editor = sp.edit();

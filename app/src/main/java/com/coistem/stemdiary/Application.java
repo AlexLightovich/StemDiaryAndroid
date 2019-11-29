@@ -10,6 +10,7 @@ public class Application extends android.app.Application {
         super.onCreate();
         VKSdk.initialize(this);
         vkAccessTokenTracker.startTracking();
+
     }
 
     VKAccessTokenTracker vkAccessTokenTracker = new VKAccessTokenTracker() {

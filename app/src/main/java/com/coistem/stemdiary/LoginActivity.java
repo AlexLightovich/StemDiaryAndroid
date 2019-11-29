@@ -14,7 +14,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.vk.sdk.VKAccessToken;
+import com.vk.sdk.VKCallback;
+import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
+import com.vk.sdk.api.VKError;
 import com.vk.sdk.util.VKUtil;
 
 import java.util.HashMap;
@@ -29,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private CheckBox rememberBox;
+    private String login;
+    private String password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,18 +69,17 @@ public class LoginActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String login = loginText.getText().toString();
-                String password = passwordTxt.getText().toString();
+                login = loginText.getText().toString();
+                password = passwordTxt.getText().toString();
                 boolean isSuccesfulLogin = signIn(login, password);
                 if(isSuccesfulLogin) {
-                    Toast.makeText(LoginActivity.this, "запускаю активность...", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    if (rememberBox.isChecked()){
-                        editor.putString("login",login);
-                        editor.putString("password",password);
-                        editor.putBoolean("isChecked",rememberBox.isChecked());
-                        editor.apply();
+                    if(!VKSdk.isLoggedIn()) {
+                        Toast.makeText(LoginActivity.this, "Пожалуйста, авторизуйтесь.", Toast.LENGTH_SHORT).show();
+                        String[] scope = {VKScope.FRIENDS};
+                        VKSdk.login(LoginActivity.this,scope);
+                    } else {
+                        logIn();
+
                     }
                 } else {
                     loginErrorDialog.show();
@@ -88,6 +93,18 @@ public class LoginActivity extends AppCompatActivity {
             signInButton.performClick();
         }
 
+    }
+
+    public void logIn() {
+        Toast.makeText(LoginActivity.this, "запускаю активность...", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        if (rememberBox.isChecked()){
+            editor.putString("login",login);
+            editor.putString("password",password);
+            editor.putBoolean("isChecked",rememberBox.isChecked());
+            editor.apply();
+        }
     }
 
     private boolean signIn(String login, String password) {
@@ -118,5 +135,22 @@ public class LoginActivity extends AppCompatActivity {
         loginText.setText("");
         passwordTxt.setText("");
         rememberBox.setChecked(false);
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, int resultCode, Intent data) {
+        if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
+            @Override
+            public void onResult(final VKAccessToken res) {
+                // Пользователь успешно авторизовался
+                logIn();
+            }
+            @Override
+            public void onError(VKError error) {
+                // Произошла ошибка авторизации (например, пользователь запретил авторизацию)
+            }
+        })) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

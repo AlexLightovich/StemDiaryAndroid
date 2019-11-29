@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
+import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
@@ -54,36 +55,50 @@ public class NewsFragment extends Fragment {
 
     public void vkRequest() {
         System.out.println("YA VOSHEL V VK REQUEST");
-        VKRequest request = VKApi.wall().get(VKParameters.from(VKApiConst.OWNER_ID,-113376999,"domain","coistem",VKApiConst.COUNT,6));
+        VKRequest request = VKApi.wall().get(VKParameters.from(VKApiConst.OWNER_ID,-113376999,VKApiConst.COUNT,20));
+        System.out.println(request.toString());
         request.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onError(VKError error) {
+                String s = error.toString();
+                int errorCode = error.errorCode;
+                System.out.println("ERRRRRRRRRORRRRRRRRR: "+error.errorMessage);
+                super.onError(error);
+            }
+
             @Override
             public void onComplete(VKResponse response) {
                 super.onComplete(response);
                 try {
                     JSONArray items = response.json.getJSONObject("response").getJSONArray("items");
                     HashMap<String, Object> map = new HashMap<>();
-                    for(int i = 1; i<6; i++) {
-                        JSONObject jsonObject = items.getJSONObject(i);
-                        JSONArray attachments = jsonObject.getJSONArray("attachments");
-                        JSONObject jsonObject1 = attachments.getJSONObject(0);
-                        String date = jsonObject.getString("date");
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy");
-                        String dateOfPost = sdf.format(Long.parseLong(date)*1000);
-                        newsDates.add(dateOfPost);
-                        if(jsonObject1.getString("type").equals("photo")) {
-                            JSONObject photos = jsonObject1.getJSONObject("photo");
-                            String url = photos.getString("photo_807");
-                            System.out.println(url);
-                            imageURLs.add(url);
+                    for(int i = 0; i<20; i++) {
+                        try {
+                            JSONObject jsonObject = items.getJSONObject(i);
+                            JSONArray attachments = jsonObject.getJSONArray("attachments");
+                            JSONObject jsonObject1 = attachments.getJSONObject(0);
+                            String date = jsonObject.getString("date");
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy");
+                            String dateOfPost = sdf.format(Long.parseLong(date)*1000);
+                            newsDates.add(dateOfPost);
+                            if(jsonObject1.getString("type").equals("photo") && !jsonObject1.getString("type").equals("video")) {
+                                JSONObject photos = jsonObject1.getJSONObject("photo");
+                                System.out.println(photos.toString());
+                                String url = photos.getString("photo_807");
+                                System.out.println(url);
+                                imageURLs.add(url);
+                                String text = jsonObject.getString("text");
+                                System.out.println(text);
+                                System.out.println("TYEEEEEEEEEEPEEEEE"+ jsonObject1.getString("type"));
+                                newsText.add(text);
+                            }
 
-                        } else {
-                            imageURLs.add("nothing");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        String text = jsonObject.getString("text");
-                        System.out.println(text);
-                        newsText.add(text);
                     }
-
+                    newsText.add("Большей новостей в нашей группе ВКонтакте!");
+                    imageURLs.add("https://ic.pics.livejournal.com/lev_dmitrich/32679866/221346/221346_original.jpg");
                     OurData.title = new String[newsText.size()];
                     OurData.title = newsText.toArray(OurData.title);
                     OurData.imgUrls = new String[imageURLs.size()];
