@@ -22,6 +22,7 @@ import com.vk.sdk.api.VKError;
 import com.vk.sdk.util.VKUtil;
 
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -30,6 +31,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordTxt;
     private AlertDialog loginErrorDialog;
     private AlertDialog.Builder loginErrorBuilder;
+    private AlertDialog errorConnectionDialog;
+    private AlertDialog.Builder errorConnectionBuilder;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private CheckBox rememberBox;
@@ -41,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         loginText = findViewById(R.id.loginText);
         passwordTxt = findViewById(R.id.pswTxt);
-        Button signInButton = findViewById(R.id.loginInBtn);
+        final Button signInButton = findViewById(R.id.loginInBtn);
         addAccounts(); // вносим аккаунты в бд
         sharedPreferences = getSharedPreferences("logins",MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -51,9 +54,22 @@ public class LoginActivity extends AppCompatActivity {
         rememberBox = findViewById(R.id.rememberCheck);
         rememberBox.setChecked(false);
 
-
-
-
+        errorConnectionBuilder = new AlertDialog.Builder(LoginActivity.this)
+                .setMessage("Ошибка подключения к интернету.\nПроверьте подключение к интернету или повторите попытку позже.")
+                .setPositiveButton("обновить", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        errorConnectionDialog.cancel();
+                        signInButton.performClick();
+                    }
+                })
+                .setNegativeButton("закрыть", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finishAffinity();
+                    }
+                });
+        errorConnectionDialog = errorConnectionBuilder.create();
         loginErrorBuilder = new AlertDialog.Builder(LoginActivity.this)
                 .setTitle("Ошибка авторизации")
                 .setMessage("Неверная комбинация логин/пароль")
@@ -69,21 +85,38 @@ public class LoginActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login = loginText.getText().toString();
-                password = passwordTxt.getText().toString();
-                boolean isSuccesfulLogin = signIn(login, password);
-                if(isSuccesfulLogin) {
-                    if(!VKSdk.isLoggedIn()) {
-                        Toast.makeText(LoginActivity.this, "Пожалуйста, авторизуйтесь.", Toast.LENGTH_SHORT).show();
-                        String[] scope = {VKScope.FRIENDS};
-                        VKSdk.login(LoginActivity.this,scope);
-                    } else {
-                        logIn();
 
-                    }
-                } else {
-                    loginErrorDialog.show();
+                CheckingConnection checkingConnection = new CheckingConnection();
+                boolean isOnline = false;
+                try {
+                    isOnline = (Boolean) checkingConnection.execute(LoginActivity.this, "https://google.com/").get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                if(isOnline) {
+                    login = loginText.getText().toString();
+                    password = passwordTxt.getText().toString();
+                    boolean isSuccesfulLogin = signIn(login, password);
+                    if(isSuccesfulLogin) {
+                        if(!VKSdk.isLoggedIn()) {
+                            Toast.makeText(LoginActivity.this, "Пожалуйста, авторизуйтесь.", Toast.LENGTH_SHORT).show();
+                            String[] scope = {VKScope.FRIENDS};
+                            VKSdk.login(LoginActivity.this,scope);
+                        } else {
+                            logIn();
+
+                        }
+                    } else {
+                        loginErrorDialog.show();
+                    }
+
+                } else {
+                    Toast.makeText(LoginActivity.this, "НЕТ ИНТЕРНЕТА КАШМАР КАКОЙТА", Toast.LENGTH_SHORT).show();
+                    errorConnectionDialog.show();
+                }
+
             }
         });
 

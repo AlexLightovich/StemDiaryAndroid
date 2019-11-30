@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -51,14 +52,18 @@ public class InfoFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String avatarUrl = input.getText().toString();
-                        MainActivity mainActivity = new MainActivity();
-                        mainActivity.savePreferences("avatarUrl",avatarUrl);
-                        Picasso.with(getContext()).load(avatarUrl).into(avatar);
+                        if(!avatarUrl.equals("")) {
+                            MainActivity mainActivity = new MainActivity();
+                            mainActivity.savePreferences("avatarUrl", avatarUrl);
+                            Picasso.with(getContext()).load(avatarUrl).error(R.drawable.ic_warning).into(avatar);
+                        } else {
+                            Toast.makeText(getContext(), "URL-Адрес не может быть пустым.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
         ;
         avatarUrlDialog = avatarUrlBuilder.create();
-        Picasso.with(getContext()).load(GetUserInfo.avatarUrl).into(avatar);
+        Picasso.with(getContext()).load(GetUserInfo.avatarUrl).error(R.drawable.stem_logo).into(avatar);
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,14 +79,6 @@ public class InfoFragment extends Fragment {
         nameTxt.setText(GetUserInfo.userSurname+" "+GetUserInfo.userName+" "+GetUserInfo.userThirdName);
         TextView coinsTxt = view.findViewById(R.id.coinsText);
         coinsTxt.setText("Коины: "+GetUserInfo.userCoins);
-        Button vkAuthBtn = view.findViewById(R.id.vkAuth);
-        vkAuthBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), VKApiExpirementsActivity.class);
-                startActivity(intent);
-            }
-        });
         Button exitFromAccount = view.findViewById(R.id.exitButton);
         exitFromAccount.setOnClickListener(new View.OnClickListener() {
             @Override

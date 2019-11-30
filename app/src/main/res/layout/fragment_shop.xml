@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".ShopFragment">
 
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="400dp"
+        android:layout_height="190dp"
+        android:src="@color/info_background_color"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-1dp" />
+
     <TextView
         android:id="@+id/stemShopTxt"
         android:layout_width="wrap_content"
@@ -16,7 +24,8 @@
         android:layout_marginBottom="8dp"
         android:fontFamily="@font/roboto_black"
         android:text="МАГАЗИН"
-        android:textColor="@android:color/secondary_text_light"
+        android:textColor="@color/colorText"
+        android:shadowColor="#000"
         android:textSize="40dp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,6 +62,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:fontFamily="@font/roboto_black"
+        android:textColor="@color/colorText"
         android:text="Ваш баланс: многа коинов"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/divider"
@@ -85,4 +95,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider"
         app:layout_constraintVertical_bias="0.0" />
+
 </android.support.constraint.ConstraintLayout>

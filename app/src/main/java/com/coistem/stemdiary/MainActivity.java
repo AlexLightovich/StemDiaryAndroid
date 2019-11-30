@@ -144,19 +144,26 @@ public class MainActivity extends AppCompatActivity {
         newsFragment = new NewsFragment();
         shopFragment = new ShopFragment();
         moderationFragment = new ModerationFragment();
-        sp = getSharedPreferences("logins",MODE_PRIVATE);
-        GetUserInfo.avatarUrl = sp.getString("avatarUrl","null");
+
+//        sp = getSharedPreferences("logins",MODE_PRIVATE);
+//        GetUserInfo.avatarUrl = sp.getString("avatarUrl","null");
+
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.main_content, newsFragment);
         fragmentTransaction.commit();
+
+
         isTimeTableVisible = false;
         isShopVisible = false;
         isNewsVisible = true;
         isModerationVisible = false;
         isInfoVisible = false;
+
         GetUserInfo getUserInfo = new GetUserInfo();
         getUserInfo.prepareJsonFile(MainActivity.this,userLogin);
+
+
 //        if(!GetUserInfo.userAccessType.equals("admin")) {
 //            navView.getMenu().removeItem(R.id.navigation_moderation);
 //        }

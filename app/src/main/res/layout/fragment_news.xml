@@ -23,7 +23,7 @@
                 android:id="@+id/imageViewCollapsing"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 android:src="@drawable/stem_logo"
                 app:layout_collapseMode="parallax" />
 

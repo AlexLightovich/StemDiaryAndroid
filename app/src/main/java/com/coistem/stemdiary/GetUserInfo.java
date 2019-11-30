@@ -35,6 +35,7 @@ public class GetUserInfo {
             userSurname = userInfo.getString("surname");
             userThirdName = userInfo.getString("thirdname");
             userAccessType = userInfo.getString("accessType");
+            avatarUrl = userInfo.getString("avatarUrl");
             System.out.println(userAccessType);
             userCounterCoins = Integer.parseInt(userCoins);
         } catch (JSONException e) {
