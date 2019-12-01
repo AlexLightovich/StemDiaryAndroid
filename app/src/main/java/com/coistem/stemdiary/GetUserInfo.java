@@ -10,7 +10,6 @@ public class GetUserInfo {
 
     public static String userName;
     public static String userSurname;
-    public static String userThirdName;
     public static String userCoins;
     public static int userCounterCoins;
     public static String avatarUrl;
@@ -33,7 +32,6 @@ public class GetUserInfo {
             userName = userInfo.getString("name");
             userCoins = userInfo.getString("coins");
             userSurname = userInfo.getString("surname");
-            userThirdName = userInfo.getString("thirdname");
             userAccessType = userInfo.getString("accessType");
             avatarUrl = userInfo.getString("avatarUrl");
             System.out.println(userAccessType);
@@ -53,7 +51,6 @@ public class GetUserInfo {
             moderationUserCoins = userInfo.getString("coins");
             moderationUserSurname = userInfo.getString("surname");
             JSONObject jo = new JSONObject();
-//            userThirdName = userInfo.getString("thirdname");
             moderationUserCounterCoins = Integer.parseInt(userCoins);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -66,6 +63,22 @@ public class GetUserInfo {
         jsonFile = jsonFileEditing.getJsonData(context);
         System.out.println("JSOOOOOOOOOOOOOOOOOON"+jsonFile);
         parseJson(login);
+    }
+
+    public void parseJSONFromServer(String jsonInput) {
+        try {
+            JSONObject userInfo = new JSONObject(jsonInput);
+            userName = userInfo.getString(" name ");
+            userCoins = userInfo.getString(" coins ");
+            userSurname = userInfo.getString(" surname ");
+            userAccessType = userInfo.getString(" accessType ");
+            avatarUrl = userInfo.getString(" avatarUrl ");
+            System.out.println(userAccessType);
+            userCounterCoins = Integer.parseInt(userCoins);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        System.out.println(jsonInput);
     }
 
 

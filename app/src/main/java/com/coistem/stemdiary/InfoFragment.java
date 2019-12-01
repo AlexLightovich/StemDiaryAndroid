@@ -76,7 +76,7 @@ public class InfoFragment extends Fragment {
             }
         });
         TextView nameTxt = view.findViewById(R.id.nameText);
-        nameTxt.setText(GetUserInfo.userSurname+" "+GetUserInfo.userName+" "+GetUserInfo.userThirdName);
+        nameTxt.setText(GetUserInfo.userSurname+" "+GetUserInfo.userName);
         TextView coinsTxt = view.findViewById(R.id.coinsText);
         coinsTxt.setText("Коины: "+GetUserInfo.userCoins);
         Button exitFromAccount = view.findViewById(R.id.exitButton);

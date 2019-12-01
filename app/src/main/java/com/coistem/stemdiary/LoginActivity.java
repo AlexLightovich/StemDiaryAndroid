@@ -1,5 +1,6 @@
 package com.coistem.stemdiary;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -89,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                 CheckingConnection checkingConnection = new CheckingConnection();
                 boolean isOnline = false;
                 try {
+//                    ProgressDialog progressDialog = new ProgressDialog.show(LoginActivity.this,"Loading...",true);
                     isOnline = (Boolean) checkingConnection.execute(LoginActivity.this, "https://google.com/").get();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -98,6 +100,8 @@ public class LoginActivity extends AppCompatActivity {
                 if(isOnline) {
                     login = loginText.getText().toString();
                     password = passwordTxt.getText().toString();
+//                    SocketConnect socketConnect = new SocketConnect();
+//                    socketConnect.execute(login,password);
                     boolean isSuccesfulLogin = signIn(login, password);
                     if(isSuccesfulLogin) {
                         if(!VKSdk.isLoggedIn()) {
@@ -141,18 +145,34 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean signIn(String login, String password) {
-        String pass = accounts.get(login);
-        System.out.println(pass);
-        if(password.equals(pass)){
-            MainActivity.userLogin = login;
-            return true;
-        } else if(pass!=null&&!password.equals(pass)) {
-            Toast.makeText(LoginActivity.this, "Неверный пароль.", Toast.LENGTH_SHORT).show();
-            return false;
-        } else {
-            Toast.makeText(LoginActivity.this, "Такого пользователя не существует.", Toast.LENGTH_SHORT).show();
-            return false;
+        SocketConnect socketConnect = new SocketConnect();
+        try {
+            String execute = (String) socketConnect.execute(login, password).get();
+            if(execute.equals("Go daleko!")){
+                return false;
+            } else {
+                GetUserInfo getUserInfo = new GetUserInfo();
+                getUserInfo.parseJSONFromServer(execute);
+                return true;
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        return false;
+//        String pass = accounts.get(login);
+//        System.out.println(pass);
+//        if(password.equals(pass)){
+//            MainActivity.userLogin = login;
+//            return true;
+//        } else if(pass!=null&&!password.equals(pass)) {
+//            Toast.makeText(LoginActivity.this, "Неверный пароль.", Toast.LENGTH_SHORT).show();
+//            return false;
+//        } else {
+//            Toast.makeText(LoginActivity.this, "Такого пользователя не существует.", Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
     }
 
     private void addAccounts() {
