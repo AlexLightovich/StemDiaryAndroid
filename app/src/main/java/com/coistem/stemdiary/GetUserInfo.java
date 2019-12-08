@@ -14,6 +14,7 @@ public class GetUserInfo {
     public static int userCounterCoins;
     public static String avatarUrl;
     public static String userAccessType;
+    public static String userToken;
 
     public static String moderationUserName;
     public static String moderationUserSurname;
@@ -73,6 +74,7 @@ public class GetUserInfo {
             userSurname = userInfo.getString(" surname ");
             userAccessType = userInfo.getString(" accessType ");
             avatarUrl = userInfo.getString(" avatarUrl ");
+            userToken = userInfo.getString(" token ");
             System.out.println(userAccessType);
             userCounterCoins = Integer.parseInt(userCoins);
         } catch (JSONException e) {

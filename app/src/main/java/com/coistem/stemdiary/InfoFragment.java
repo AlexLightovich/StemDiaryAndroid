@@ -41,6 +41,7 @@ public class InfoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_info, container, false);
         final ImageView avatar = view.findViewById(R.id.avatarImageView);
         final EditText input = new EditText(getContext());
+        Toast.makeText(getContext(), GetUserInfo.userToken, Toast.LENGTH_SHORT).show();
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);

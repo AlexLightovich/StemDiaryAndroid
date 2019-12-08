@@ -31,7 +31,7 @@ public class TimetableFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), AddingTimetableActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 123);
             }
         });
         WebView webView = view.findViewById(R.id.webView);

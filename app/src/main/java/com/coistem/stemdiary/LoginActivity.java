@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.vk.sdk.VKAccessToken;
@@ -24,12 +27,16 @@ import com.vk.sdk.util.VKUtil;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity{
 
     HashMap<String,String> accounts = new HashMap<>();
     private EditText loginText;
     private EditText passwordTxt;
+    private AlertDialog.Builder loadingBuilder;
+    public static AlertDialog loadingDialog;
     private AlertDialog loginErrorDialog;
     private AlertDialog.Builder loginErrorBuilder;
     private AlertDialog errorConnectionDialog;
@@ -37,8 +44,10 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private CheckBox rememberBox;
+    private String isSuccesfulLogin;
     private String login;
     private String password;
+    private  boolean isOnline = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,42 +91,27 @@ public class LoginActivity extends AppCompatActivity {
                 });
         loginErrorDialog = loginErrorBuilder.create();
 
+        ProgressBar progressBar = new ProgressBar(LoginActivity.this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        progressBar.setLayoutParams(lp);
+
+        loadingBuilder = new AlertDialog.Builder(LoginActivity.this)
+                .setCancelable(false)
+                .setMessage("LOADINNNNNNNNNNG");
+        loadingDialog = loadingBuilder.create();
+
 
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                loadingDialog.show();
                 CheckingConnection checkingConnection = new CheckingConnection();
-                boolean isOnline = false;
-                try {
-//                    ProgressDialog progressDialog = new ProgressDialog.show(LoginActivity.this,"Loading...",true);
-                    isOnline = (Boolean) checkingConnection.execute(LoginActivity.this, "https://google.com/").get();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if(isOnline) {
-                    login = loginText.getText().toString();
-                    password = passwordTxt.getText().toString();
-                    boolean isSuccesfulLogin = signIn(login, password);
-                    if(isSuccesfulLogin) {
-                        if(!VKSdk.isLoggedIn()) {
-                            Toast.makeText(LoginActivity.this, "Пожалуйста, авторизуйтесь.", Toast.LENGTH_SHORT).show();
-                            String[] scope = {VKScope.FRIENDS};
-                            VKSdk.login(LoginActivity.this,scope);
-                        } else {
-                            logIn();
+                CheckingConnectionTask checkingConnectionTask = new CheckingConnectionTask();
+                checkingConnectionTask.execute();
+                //                    ProgressDialog progressDialog = new ProgressDialog.show(LoginActivity.this,"Loading...",true);
 
-                        }
-                    } else {
-                        loginErrorDialog.show();
-                    }
-
-                } else {
-                    Toast.makeText(LoginActivity.this, "НЕТ ИНТЕРНЕТА КАШМАР КАКОЙТА", Toast.LENGTH_SHORT).show();
-                    errorConnectionDialog.show();
-                }
 
             }
         });
@@ -142,36 +136,38 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private boolean signIn(String login, String password) {
-//        SocketConnect socketConnect = new SocketConnect();
-//        try {
-//            String execute = (String) socketConnect.execute(login, password).get();
-//            if(execute.equals("Go daleko!")){
-//                return false;
-//            } else {
-//                GetUserInfo getUserInfo = new GetUserInfo();
-//                getUserInfo.parseJSONFromServer(execute);
-//                return true;
-//            }
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-        //--------server connection---------
-        String pass = accounts.get(login);
-        System.out.println(pass);
-        if(password.equals(pass)){
-            MainActivity.userLogin = login;
-            return true;
-        } else if(pass!=null&&!password.equals(pass)) {
-            Toast.makeText(LoginActivity.this, "Неверный пароль.", Toast.LENGTH_SHORT).show();
-            return false;
-        } else {
-            Toast.makeText(LoginActivity.this, "Такого пользователя не существует.", Toast.LENGTH_SHORT).show();
-            return false;
+    private String signIn(String login, String password) {
+        SocketConnect socketConnect = new SocketConnect();
+        String execute = null;
+        socketConnect.execute("auth",login,password);
+        try {
+            execute =(String) socketConnect.get(2,TimeUnit.SECONDS);
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+            execute = "Connection error";
+            e.printStackTrace();
         }
+        if(execute.equals("Go daleko!")){
+            return "Go daleko!";
+        } else if(execute.equals("Connection error")) {
+            return "Server Connection error";
+        }else {
+            GetUserInfo getUserInfo = new GetUserInfo();
+            getUserInfo.parseJSONFromServer(execute);
+            return "Successful";
+        }
+        //--------server connection---------
+//        String pass = accounts.get(login);
+//        System.out.println(pass);
+//        if(password.equals(pass)){
+//            MainActivity.userLogin = login;
+//            return true;
+//        } else if(pass!=null&&!password.equals(pass)) {
+//            Toast.makeText(LoginActivity.this, "Неверный пароль.", Toast.LENGTH_SHORT).show();
+//            return false;
+//        } else {
+//            Toast.makeText(LoginActivity.this, "Такого пользователя не существует.", Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
     }
 
     private void addAccounts() {
@@ -189,6 +185,62 @@ public class LoginActivity extends AppCompatActivity {
         rememberBox.setChecked(false);
     }
 
+    private class CheckingConnectionTask extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+                CheckingConnection checkingConnection = new CheckingConnection();
+            boolean o = false;
+
+            try {
+                o = (Boolean) checkingConnection.execute(LoginActivity.this, "https://google.com").get();
+                System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  "+o);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return o;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            loadingDialog.cancel();
+
+            String s = (isOnline ? "Online" : "Offline");
+            Toast.makeText(LoginActivity.this, s, Toast.LENGTH_SHORT).show();
+            if(isOnline) {
+                login = loginText.getText().toString();
+                password = passwordTxt.getText().toString();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        isSuccesfulLogin = signIn(login, password);
+                    }
+                }).run();
+                if(isSuccesfulLogin.equals("Successful")) {
+                    if(!VKSdk.isLoggedIn()) {
+                        Toast.makeText(LoginActivity.this, "Пожалуйста, авторизуйтесь.", Toast.LENGTH_SHORT).show();
+                        String[] scope = {VKScope.FRIENDS};
+                        VKSdk.login(LoginActivity.this,scope);
+                    } else {
+                        logIn();
+
+                    }
+                } else if(isSuccesfulLogin.equals("Go daleko!")) {
+                    loginErrorDialog.show();
+                } else if(isSuccesfulLogin.equals("Server Connection error")) {
+                    Toast.makeText(LoginActivity.this, "Server connection error", Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                Toast.makeText(LoginActivity.this, "НЕТ ИНТЕРНЕТА КАШМАР КАКОЙТА", Toast.LENGTH_SHORT).show();
+                errorConnectionDialog.show();
+            }
+            super.onPostExecute(o);
+        }
+    }
+
     @Override
     protected void onActivityResult(final int requestCode, int resultCode, Intent data) {
         if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
@@ -197,6 +249,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Пользователь успешно авторизовался
                 logIn();
             }
+
             @Override
             public void onError(VKError error) {
                 // Произошла ошибка авторизации (например, пользователь запретил авторизацию)

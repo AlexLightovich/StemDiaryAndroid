@@ -10,10 +10,14 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 
 public class ShopFragment extends Fragment {
@@ -30,6 +34,7 @@ public class ShopFragment extends Fragment {
         shopList = view.findViewById(R.id.shopList);
         TextView balanceTxt = view.findViewById(R.id.balanceText);
         balanceTxt.setText("Ваш баланс: "+GetUserInfo.userCounterCoins+" коинов");
+        Toast.makeText(getContext(), takeItems(GetUserInfo.userToken), Toast.LENGTH_SHORT).show();
         return view;
     }
 
@@ -62,6 +67,18 @@ public class ShopFragment extends Fragment {
         SimpleAdapter simpleAdapter = new SimpleAdapter(view.getContext(), list, R.layout.listview_shop, new String[]{"Image", "Text"}, new int[]{R.id.icon, R.id.text1});
         shopList.setAdapter(simpleAdapter);
         super.onResume();
+    }
+
+    public String takeItems(String token) {
+        SocketConnect socketConnect = new SocketConnect();
+        socketConnect.execute("shop",token);
+        String o = null;
+        try {
+            o = (String) socketConnect.get(2, TimeUnit.SECONDS);
+        } catch (ExecutionException | TimeoutException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return o;
     }
 
     @Override

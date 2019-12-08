@@ -172,9 +172,9 @@ public class MainActivity extends AppCompatActivity {
         getUserInfo.prepareJsonFile(MainActivity.this,userLogin);
 
 
-        if(!GetUserInfo.userAccessType.equals("admin")) {
-            navView.getMenu().removeItem(R.id.navigation_moderation); //this toje offnut
-        }
+//        if(!GetUserInfo.userAccessType.equals("admin")) {
+//            navView.getMenu().removeItem(R.id.navigation_moderation); //this toje offnut
+//        }
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }

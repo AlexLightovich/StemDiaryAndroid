@@ -19,8 +19,7 @@ public class AddingTimetableActivity extends Activity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         Intent intent = new Intent();
-        intent.putExtra("date", "дата");
-        Toast.makeText(this, "leaving", Toast.LENGTH_SHORT).show();
+        intent.putExtra("date", selectedDate);
         setResult(RESULT_OK, intent);
         String date = intent.getStringExtra("date");
         Toast.makeText(this, date, Toast.LENGTH_SHORT).show();
