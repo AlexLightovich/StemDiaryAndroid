@@ -7,15 +7,16 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:name=".Application"
-        android:theme="@style/CustomTheme">
-        <activity android:name=".VKApiExpirementsActivity"></activity>
+        android:theme="@style/CustomTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".AddingTimetableActivity"></activity>
+        <activity android:name=".VKApiExpirementsActivity" />
         <activity
             android:name="com.vk.sdk.VKServiceActivity"
             android:label="ServiceActivity"

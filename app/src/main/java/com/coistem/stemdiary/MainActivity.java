@@ -1,8 +1,10 @@
 package com.coistem.stemdiary;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private NewsFragment newsFragment;
     private ShopFragment shopFragment;
     private ModerationFragment moderationFragment;
+    private TimetableFragment timetableFragment;
     private boolean isInfoVisible;
     private boolean isTimeTableVisible;
     private boolean isNewsVisible;
@@ -73,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
 
                     } else {
                         // replaced timetable fragment
+                        FragmentManager supportFragmentManager = getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.main_content, timetableFragment);
+                        fragmentTransaction.commit();
                         isTimeTableVisible = true;
                         isNewsVisible = false;
                         isModerationVisible = false;
@@ -143,10 +150,11 @@ public class MainActivity extends AppCompatActivity {
         infoFragment = new InfoFragment();
         newsFragment = new NewsFragment();
         shopFragment = new ShopFragment();
+        timetableFragment = new TimetableFragment();
         moderationFragment = new ModerationFragment();
 
-//        sp = getSharedPreferences("logins",MODE_PRIVATE);
-//        GetUserInfo.avatarUrl = sp.getString("avatarUrl","null");
+        sp = getSharedPreferences("logins",MODE_PRIVATE);                   // offnut
+        GetUserInfo.avatarUrl = sp.getString("avatarUrl","null");    //ofnut
 
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
@@ -164,9 +172,9 @@ public class MainActivity extends AppCompatActivity {
         getUserInfo.prepareJsonFile(MainActivity.this,userLogin);
 
 
-//        if(!GetUserInfo.userAccessType.equals("admin")) {
-//            navView.getMenu().removeItem(R.id.navigation_moderation);
-//        }
+        if(!GetUserInfo.userAccessType.equals("admin")) {
+            navView.getMenu().removeItem(R.id.navigation_moderation); //this toje offnut
+        }
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }
@@ -177,6 +185,16 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        //        if(resultCode== Activity.RESULT_OK){
+        System.out.println("requestCode = " + requestCode + ", resultCode = " + resultCode);
+        Toast.makeText(MainActivity.this, "Выбранная дата: "+data.getStringExtra("date"), Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(MainActivity.this, "Ничего не выбрано.", Toast.LENGTH_SHORT).show();
+//        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     public void onBackPressed() {
