@@ -20,6 +20,9 @@ public class OurData {
     public static String[] imgUrls;
     public static String[] dates;
 
+    public static String[] itemNames;
+    public static String[] itemImageUrls;
+
 
 
 }

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:onClick="expoClick">
+    android:layout_margin="5dp">
 
     <ImageView
         android:id="@+id/icon"
@@ -16,4 +16,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:paddingStart="?android:attr/listPreferredItemPaddingStart" />
+
 </LinearLayout>

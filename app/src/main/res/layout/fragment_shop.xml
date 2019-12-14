@@ -7,12 +7,12 @@
     tools:context=".ShopFragment">
 
     <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="400dp"
+        android:id="@+id/backgroundShopImage"
+        android:layout_width="500dp"
         android:layout_height="190dp"
-        android:src="@color/info_background_color"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-1dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/stemShopTxt"
@@ -83,7 +83,7 @@
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="@+id/balanceText" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/shopList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity{
     private String isSuccesfulLogin;
     private String login;
     private String password;
-    private  boolean isOnline = false;
+    private CheckingConnectionTask checkingConnectionTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +99,7 @@ public class LoginActivity extends AppCompatActivity{
 
         loadingBuilder = new AlertDialog.Builder(LoginActivity.this)
                 .setCancelable(false)
+                .setView(progressBar)
                 .setMessage("LOADINNNNNNNNNNG");
         loadingDialog = loadingBuilder.create();
 
@@ -107,12 +108,7 @@ public class LoginActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 loadingDialog.show();
-                CheckingConnection checkingConnection = new CheckingConnection();
-                CheckingConnectionTask checkingConnectionTask = new CheckingConnectionTask();
-                checkingConnectionTask.execute();
-                //                    ProgressDialog progressDialog = new ProgressDialog.show(LoginActivity.this,"Loading...",true);
-
-
+                connectToServer();
             }
         });
 
@@ -134,6 +130,12 @@ public class LoginActivity extends AppCompatActivity{
             editor.putBoolean("isChecked",rememberBox.isChecked());
             editor.apply();
         }
+    }
+
+    private void connectToServer() {
+//        CheckingConnection checkingConnection = new CheckingConnection();
+        checkingConnectionTask = new CheckingConnectionTask();
+        checkingConnectionTask.execute();
     }
 
     private String signIn(String login, String password) {
@@ -189,33 +191,33 @@ public class LoginActivity extends AppCompatActivity{
 
         @Override
         protected Object doInBackground(Object[] objects) {
-                CheckingConnection checkingConnection = new CheckingConnection();
-            boolean o = false;
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            boolean sanyadebil = false;
 
             try {
-                o = (Boolean) checkingConnection.execute(LoginActivity.this, "https://google.com").get();
-                System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  "+o);
+                CheckingConnection checkingConnection = new CheckingConnection();
+                sanyadebil = (Boolean) checkingConnection.execute(getBaseContext(), "https://www.coistem.com/").get();
+                System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  "+sanyadebil);
+                loadingDialog.cancel();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return o;
-        }
-
-        @Override
-        protected void onPostExecute(Object o) {
-            loadingDialog.cancel();
-
-            String s = (isOnline ? "Online" : "Offline");
+            String s = (sanyadebil ? "Online" : "Offline");
             Toast.makeText(LoginActivity.this, s, Toast.LENGTH_SHORT).show();
-            if(isOnline) {
+            if(sanyadebil) {
                 login = loginText.getText().toString();
                 password = passwordTxt.getText().toString();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        isSuccesfulLogin = signIn(login, password);
+//                        isSuccesfulLogin = signIn(login, password);
+                        isSuccesfulLogin = "Successful";
                     }
                 }).run();
                 if(isSuccesfulLogin.equals("Successful")) {

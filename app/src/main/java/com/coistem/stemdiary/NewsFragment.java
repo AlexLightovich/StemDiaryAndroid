@@ -1,17 +1,17 @@
 package com.coistem.stemdiary;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
@@ -25,9 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,15 +35,17 @@ public class NewsFragment extends Fragment {
     private static ArrayList<Map<String, Object>> news = new ArrayList<>();
     private View view;
     private RecyclerView recyclerView;
+    private ProgressBar progressBar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_news, container, false);
         recyclerView = view.findViewById(R.id.listRecyclerView);
+        progressBar = view.findViewById(R.id.newsProgressBar);
+        progressBar.setVisibility(View.VISIBLE);
 //        listView = view.findViewById(R.id.newsList);
         setToolbar(GetUserInfo.userName);
         vkRequest();
-
         return view;
     }
 
@@ -54,7 +54,6 @@ public class NewsFragment extends Fragment {
     private ArrayList<String> newsDates = new ArrayList<>();
 
     public void vkRequest() {
-        System.out.println("YA VOSHEL V VK REQUEST");
         VKRequest request = VKApi.wall().get(VKParameters.from(VKApiConst.OWNER_ID,-113376999,VKApiConst.COUNT,20));
         System.out.println(request.toString());
         request.executeWithListener(new VKRequest.VKRequestListener() {
@@ -106,20 +105,11 @@ public class NewsFragment extends Fragment {
                     OurData.dates = new String[newsDates.size()];
                     OurData.dates = newsDates.toArray(OurData.dates);
 
-                    ListAdapter listAdapter = new ListAdapter();
-                    recyclerView.setAdapter(listAdapter);
+                    NewsListAdapter newsListAdapter = new NewsListAdapter();
+                    recyclerView.setAdapter(newsListAdapter);
                     RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
                     recyclerView.setLayoutManager(layoutManager);
-//                    for(int i  = 0; i<OurData.title.length; i++) {
-//                        System.out.println("START");
-//                        System.out.println(OurData.title[i]);
-//                        System.out.println("END");
-//                    }
-//                    for(int i  = 0; i<OurData.imgUrls.length; i++) {
-//                        System.out.println("START");
-//                        System.out.println(OurData.imgUrls[i]);
-//                        System.out.println("END");
-//                    }
+                    progressBar.setVisibility(View.INVISIBLE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

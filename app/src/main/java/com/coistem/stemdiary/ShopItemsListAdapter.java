@@ -13,12 +13,12 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-public class ListAdapter extends RecyclerView.Adapter {
+public class ShopItemsListAdapter extends RecyclerView.Adapter {
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listview_vknews,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listview_shop,viewGroup,false);
         return new ListViewHolder(view);
     }
 
@@ -29,37 +29,28 @@ public class ListAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return OurData.title.length;
+        int length = OurData.itemNames.length;
+        return length;
     }
-
 
     private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView itemTextView;
         private ImageView itemImageView;
-        private TextView itemDateView;
-
+        private int position;
         public ListViewHolder(View itemView) {
             super(itemView);
-            itemTextView = (TextView) itemView.findViewById(R.id.newsText);
-            itemImageView = (ImageView) itemView.findViewById(R.id.newsImage);
-            itemDateView = (TextView) itemView.findViewById(R.id.newsDate);
+            itemTextView = (TextView) itemView.findViewById(R.id.text1);
+            itemImageView = (ImageView) itemView.findViewById(R.id.icon);
             itemView.setOnClickListener(this);
         }
         public void bindView(int position) {
-            itemTextView.setText(OurData.title[position]);
-            Picasso.with(itemView.getContext()).load(OurData.imgUrls[position]).error(R.drawable.ic_example_avatar).into(itemImageView);
-            itemDateView.setText(OurData.dates[position]);
+            itemTextView.setText(OurData.itemNames[position]);
+            Picasso.with(itemView.getContext()).load(OurData.itemImageUrls[position]).error(R.drawable.ic_example_avatar).into(itemImageView);
+            this.position = position;
         }
 
         public void onClick(View view) {
-            TextView viewById = view.findViewById(R.id.newsText);
-            String zalupa = viewById.getText().toString();
-            if(zalupa.contains("Большей новостей в нашей группе ВКонтакте!")) {
-                Uri address = Uri.parse("https://vk.com/coistem");
-                Intent openLinkIntent = new Intent(Intent.ACTION_VIEW, address);
-                view.getContext().startActivity(openLinkIntent);
-            }
+            Toast.makeText(view.getContext(), "YA DEBILLL YOU CLICK ON "+position, Toast.LENGTH_SHORT).show();
         }
     }
-
 }
