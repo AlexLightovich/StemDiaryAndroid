@@ -38,7 +38,8 @@ public class TimetableFragment extends Fragment {
         SimpleWebViewClient webViewClient = new SimpleWebViewClient(getActivity());
         webView.setWebViewClient(webViewClient);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("http://vk.com/coistem");
+//        webView.loadUrl("http://vk.com/coistem");
+        webView.loadUrl("http://192.168.1.100:8080/timetable/1");
         return view;
     }
 }

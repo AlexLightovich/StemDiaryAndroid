@@ -73,10 +73,11 @@ public class LoginActivity extends AppCompatActivity{
                         signInButton.performClick();
                     }
                 })
-                .setNegativeButton("закрыть", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Выход", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finishAffinity();
+                        System.exit(0);
                     }
                 });
         errorConnectionDialog = errorConnectionBuilder.create();
@@ -144,11 +145,12 @@ public class LoginActivity extends AppCompatActivity{
         socketConnect.execute("auth",login,password);
         try {
             execute =(String) socketConnect.get(2,TimeUnit.SECONDS);
+            System.out.println(execute);
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             execute = "Connection error";
             e.printStackTrace();
         }
-        if(execute.equals("Go daleko!")){
+        if(execute.equalsIgnoreCase("Database \"Go daleko!\"")){
             return "Go daleko!";
         } else if(execute.equals("Connection error")) {
             return "Server Connection error";
@@ -201,7 +203,6 @@ public class LoginActivity extends AppCompatActivity{
             try {
                 CheckingConnection checkingConnection = new CheckingConnection();
                 sanyadebil = (Boolean) checkingConnection.execute(getBaseContext(), "https://www.coistem.com/").get();
-                System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  "+sanyadebil);
                 loadingDialog.cancel();
             } catch (ExecutionException e) {
                 e.printStackTrace();
@@ -216,8 +217,9 @@ public class LoginActivity extends AppCompatActivity{
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-//                        isSuccesfulLogin = signIn(login, password);
-                        isSuccesfulLogin = "Successful";
+                        isSuccesfulLogin = signIn(login, password);
+//                        isSuccesfulLogin = "Successful";
+                        System.out.println(isSuccesfulLogin);
                     }
                 }).run();
                 if(isSuccesfulLogin.equals("Successful")) {

@@ -167,14 +167,14 @@ public class MainActivity extends AppCompatActivity {
         isNewsVisible = true;
         isModerationVisible = false;
         isInfoVisible = false;
+//
+//        GetUserInfo getUserInfo = new GetUserInfo();
+//        getUserInfo.prepareJsonFile(MainActivity.this,userLogin);
 
-        GetUserInfo getUserInfo = new GetUserInfo();
-        getUserInfo.prepareJsonFile(MainActivity.this,userLogin);
 
-
-//        if(!GetUserInfo.userAccessType.equals("admin")) {
-//            navView.getMenu().removeItem(R.id.navigation_moderation); //this toje offnut
-//        }
+        if(!GetUserInfo.userAccessType.equals("ADMIN")) {
+            navView.getMenu().removeItem(R.id.navigation_moderation); //this toje offnut
+        }
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }

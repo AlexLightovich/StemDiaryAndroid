@@ -33,4 +33,5 @@ dependencies {
     implementation 'com.vk:androidsdk:1.6.8'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.github.prolificinteractive:material-calendarview:2.0.0'
+    implementation 'org.jsoup:jsoup:1.12.1'
 }

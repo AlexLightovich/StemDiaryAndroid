@@ -89,24 +89,24 @@ public class ShopFragment extends Fragment {
     private ArrayList<String> imageURLs = new ArrayList<>();
 
     public void changeColors() {
-        ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
+        ValueAnimator anim = ValueAnimator.ofInt(0,360);
         anim.setDuration(2000);
         int hue = 0;
         hsv = new float[3]; // Transition color
-        hsv[1] = 1;
+        hsv[1] = 0.4f;
         hsv[2] = 1;
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-
-                hsv[0] = 360 * animation.getAnimatedFraction();
-
+//                hsv[0] = 360 * animation.getAnimatedFraction();
+                int i = (Integer) animation.getAnimatedValue();
+                System.out.println(i);
+                hsv[0] = (float) i;
                 runColor = Color.HSVToColor(hsv);
                 backgroundImg.setBackgroundColor(runColor);
             }
         });
-
         anim.setRepeatCount(Animation.INFINITE);
 
         anim.start();
