@@ -72,7 +72,7 @@ public class ModerationFragment extends Fragment {
         roleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String[] stringArray = getResources().getStringArray(R.array.entries);
+                String[] stringArray = getResources().getStringArray(R.array.courses_names);
                 Toast.makeText(getContext(), "Selected: "+stringArray[position], Toast.LENGTH_SHORT).show();
             }
 

@@ -153,8 +153,8 @@ public class MainActivity extends AppCompatActivity {
         timetableFragment = new TimetableFragment();
         moderationFragment = new ModerationFragment();
 
-        sp = getSharedPreferences("logins",MODE_PRIVATE);                   // offnut
-        GetUserInfo.avatarUrl = sp.getString("avatarUrl","null");    //ofnut
+//        sp = getSharedPreferences("logins",MODE_PRIVATE);                   // offnut
+//        GetUserInfo.avatarUrl = sp.getString("avatarUrl","null");    //ofnut
 
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();

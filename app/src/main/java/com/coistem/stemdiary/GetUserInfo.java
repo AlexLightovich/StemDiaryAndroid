@@ -1,6 +1,7 @@
 package com.coistem.stemdiary;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +35,7 @@ public class GetUserInfo {
             userCoins = userInfo.getString("coins");
             userSurname = userInfo.getString("surname");
             userAccessType = userInfo.getString("accessType");
-            avatarUrl = userInfo.getString("avatarUrl");
+//            avatarUrl = userInfo.getString("avatarUrl");
             System.out.println(userAccessType);
             userCounterCoins = Integer.parseInt(userCoins);
         } catch (JSONException e) {
@@ -76,13 +77,14 @@ public class GetUserInfo {
                 str+= chars[i];
             }
             jsonInput = str;
+            Log.d("Server JSON:",jsonInput);
             JSONObject userInfo = new JSONObject(jsonInput);
+            avatarUrl = userInfo.getString("avatarUrl");
             userName = userInfo.getString("name");
             userCoins = userInfo.getString("stemCoins");
             userSurname = userInfo.getString("surname");
             userAccessType = userInfo.getString("accessType");
-            avatarUrl = userInfo.getString("avatarUrl");
-            userToken = userInfo.getString("token");
+//            userToken = userInfo.getString("token");
             System.out.println(userAccessType);
             userCounterCoins = Integer.parseInt(userCoins);
         } catch (JSONException e) {

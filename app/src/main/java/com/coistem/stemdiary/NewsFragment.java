@@ -34,8 +34,10 @@ public class NewsFragment extends Fragment {
 
     private static ArrayList<Map<String, Object>> news = new ArrayList<>();
     private View view;
-    private RecyclerView recyclerView;
+    private static RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private static boolean isFirstEnter = true;
+    private boolean isAlreadyWork=false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -54,6 +56,19 @@ public class NewsFragment extends Fragment {
     private ArrayList<String> newsDates = new ArrayList<>();
 
     public void vkRequest() {
+
+        OurData.title = null;
+        OurData.imgUrls = null;
+        OurData.dates = null;
+        newsText.clear();
+        imageURLs.clear();
+        newsDates.clear();
+
+        if(isAlreadyWork) {
+            return;
+        }
+
+        isAlreadyWork = true;
         VKRequest request = VKApi.wall().get(VKParameters.from(VKApiConst.OWNER_ID,-113376999,VKApiConst.COUNT,20));
         System.out.println(request.toString());
         request.executeWithListener(new VKRequest.VKRequestListener() {
@@ -62,6 +77,7 @@ public class NewsFragment extends Fragment {
                 String s = error.toString();
                 int errorCode = error.errorCode;
                 System.out.println("ERRRRRRRRRORRRRRRRRR: "+error.errorMessage);
+                isFirstEnter = true;
                 super.onError(error);
             }
 
@@ -69,6 +85,7 @@ public class NewsFragment extends Fragment {
             public void onComplete(VKResponse response) {
                 super.onComplete(response);
                 try {
+
                     JSONArray items = response.json.getJSONObject("response").getJSONArray("items");
                     HashMap<String, Object> map = new HashMap<>();
                     for(int i = 0; i<20; i++) {
@@ -113,7 +130,7 @@ public class NewsFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
+                isAlreadyWork = false;
 
             }
         });
@@ -125,4 +142,12 @@ public class NewsFragment extends Fragment {
         collapsingToolbar.setTitle(title);
     }
 
+    @Override
+    public void onPause() {
+        OurData.dates = null;
+        OurData.imgUrls = null;
+        OurData.title = null;
+
+        super.onPause();
+    }
 }

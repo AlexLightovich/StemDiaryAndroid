@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,7 @@ public class InfoFragment extends Fragment {
                 })
         ;
         avatarUrlDialog = avatarUrlBuilder.create();
+        Log.d("Server avatar url",GetUserInfo.avatarUrl);
         Picasso.with(getContext()).load(GetUserInfo.avatarUrl).error(R.drawable.stem_logo).into(avatar);
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override

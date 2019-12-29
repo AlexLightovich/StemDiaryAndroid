@@ -70,7 +70,7 @@ public class ShopFragment extends Fragment {
         backgroundImg = view.findViewById(R.id.backgroundShopImage);
         TextView balanceTxt = view.findViewById(R.id.balanceText);
         balanceTxt.setText("Ваш баланс: "+GetUserInfo.userCounterCoins+" коинов");
-        takeItems("YA SOSAL MENYA EBALI");
+        takeItems("fsddsfkdsf");
 //        Toast.makeText(getContext(), takeItems(GetUserInfo.userToken), Toast.LENGTH_SHORT).show();
 //        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 100);
 //        valueAnimator.setDuration(10);
