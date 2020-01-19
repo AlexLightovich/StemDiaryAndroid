@@ -39,5 +39,11 @@
         <item>Киселев Артем</item>
         <item>Маркер Маркеров</item>
     </string-array>
-
+    <string-array name="MyBestColors">
+        <item>#008577</item>
+        <item>#00547B</item>
+        <item>#d81B60</item>
+        <item>@color/info_background_color</item>
+        <item>@color/design_default_color_primary_dark</item>
+    </string-array>
 </resources>

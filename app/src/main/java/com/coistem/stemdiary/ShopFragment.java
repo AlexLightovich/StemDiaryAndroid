@@ -4,6 +4,8 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.ColorSpace;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,6 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -37,6 +40,7 @@ public class ShopFragment extends Fragment {
     private RecyclerView shopList;
     private View view;
     public ImageView backgroundImg;
+    private ImageView backgroundMaskImage;
     float[] hsv;
     int runColor;
 
@@ -68,6 +72,7 @@ public class ShopFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_shop, container, false);
         shopList = view.findViewById(R.id.shopList);
         backgroundImg = view.findViewById(R.id.backgroundShopImage);
+        backgroundMaskImage = view.findViewById(R.id.backgroundMaskShopImage);
         TextView balanceTxt = view.findViewById(R.id.balanceText);
         balanceTxt.setText("Ваш баланс: "+GetUserInfo.userCounterCoins+" коинов");
         takeItems("fsddsfkdsf");
@@ -81,12 +86,50 @@ public class ShopFragment extends Fragment {
 //                backgroundImg.setAlpha((Float)animation.getAnimatedValue());
 //            }
 //        });
-        changeColors();
+//        changeColors();
+//        ImageView mask = view.findViewById(R.id.backgroundMaskShopImage);
+//        int rgb = Color.rgb(151, 101, 165);
+//        mask.setBackgroundColor(Color.rgb(101, 51,115));
+//        mask.setAlpha(0.3f);
+//        backgroundImg.setBackgroundColor(rgb);
         return view;
     }
 
     private ArrayList<String> names = new ArrayList<>();
     private ArrayList<String> imageURLs = new ArrayList<>();
+
+    public void randomChangeColors() {
+        int[][] colors = new int[5][3];
+        colors[0][0]=151;
+        colors[0][1]=101;
+        colors[0][2]=165;
+        //-----
+        colors[1][0]= 67;
+        colors[1][1]=184;
+        colors[1][2]=98;
+        //-----
+        colors[2][0]=245;
+        colors[2][1]=88 ;
+        colors[2][2]=125;
+        //-----
+        colors[3][0]= 63;
+        colors[3][1]=81;
+        colors[3][2]=181;
+        //-----
+        colors[4][0]=249;
+        colors[4][1]=142;
+        colors[4][2]=61;
+        //-----
+        Random rnd = new Random();
+        int i = rnd.nextInt(colors.length);
+        System.out.println("COUNT: "+i);
+        int[] color = colors[i];
+        int rgb = Color.rgb(color[0], color[1], color[2]);
+        int maskRgb = Color.rgb(color[0]-50, color[1]-50, color[2]-50);
+        backgroundMaskImage.setBackgroundColor(maskRgb);
+        backgroundMaskImage.setAlpha(0.3f);
+        backgroundImg.setBackgroundColor(rgb);
+    }
 
     public void changeColors() {
         ValueAnimator anim = ValueAnimator.ofInt(0,360);
@@ -118,6 +161,7 @@ public class ShopFragment extends Fragment {
         shopList.setAdapter(shopItemsListAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         shopList.setLayoutManager(layoutManager);
+        randomChangeColors();
         super.onResume();
     }
 

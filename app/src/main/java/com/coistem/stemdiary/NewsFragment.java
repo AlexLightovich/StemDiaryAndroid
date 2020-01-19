@@ -99,13 +99,9 @@ public class NewsFragment extends Fragment {
                             newsDates.add(dateOfPost);
                             if(jsonObject1.getString("type").equals("photo") && !jsonObject1.getString("type").equals("video")) {
                                 JSONObject photos = jsonObject1.getJSONObject("photo");
-//                                System.out.println(photos.toString());
                                 String url = photos.getString("photo_807");
-//                                System.out.println(url);
                                 imageURLs.add(url);
                                 String text = jsonObject.getString("text");
-//                                System.out.println(text);
-//                                System.out.println("TYEEEEEEEEEEPEEEEE"+ jsonObject1.getString("type"));
                                 newsText.add(text);
                             }
 

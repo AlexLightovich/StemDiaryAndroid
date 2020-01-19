@@ -100,8 +100,9 @@ public class LoginActivity extends AppCompatActivity{
 
         loadingBuilder = new AlertDialog.Builder(LoginActivity.this)
                 .setCancelable(false)
-                .setView(progressBar)
-                .setMessage("LOADINNNNNNNNNNG");
+                .setView(R.layout.pleasewaitdialog)
+//                .setView(progressBar)
+                .setMessage("Авторизируемся. Пожалуйста, подождите...");
         loadingDialog = loadingBuilder.create();
 
 
@@ -122,7 +123,7 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     public void logIn() {
-        Toast.makeText(LoginActivity.this, "запускаю активность...", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(LoginActivity.this, "запускаю активность...", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         if (rememberBox.isChecked()){
@@ -140,26 +141,33 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private String signIn(String login, String password) {
-        SocketConnect socketConnect = new SocketConnect();
-        String execute = null;
-        socketConnect.execute("auth",login,password);
-        try {
-            execute =(String) socketConnect.get(2,TimeUnit.SECONDS);
-            System.out.println(execute);
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            execute = "Connection error";
-            e.printStackTrace();
-        }
-        if(execute.equalsIgnoreCase("Database \"Go daleko!\"")){
+        if(login==null || login.equals("")) {
+            Toast.makeText(this, "Поле логина не может быть пустым.", Toast.LENGTH_SHORT).show();
             return "Go daleko!";
-        } else if(execute.equals("Connection error")) {
-            return "Server Connection error";
-        }else {
-            GetUserInfo getUserInfo = new GetUserInfo();
-            getUserInfo.parseJSONFromServer(execute);
-            return "Successful";
-        }
-        //--------server connection---------
+        } else if(password == null || password.equals("")) {
+            Toast.makeText(this, "Поле пароля не может быть пустым.", Toast.LENGTH_SHORT).show();
+            return "Go daleko!";
+        } else {
+            SocketConnect socketConnect = new SocketConnect();
+            String execute = null;
+            socketConnect.execute("auth", login, password);
+            try {
+                execute = (String) socketConnect.get(2, TimeUnit.SECONDS);
+                System.out.println(execute);
+            } catch (ExecutionException | InterruptedException | TimeoutException e) {
+                execute = "Connection error";
+                e.printStackTrace();
+            }
+            if (execute.equalsIgnoreCase("Database \"Go daleko!\"")) {
+                return "Go daleko!";
+            } else if (execute.equals("Connection error")) {
+                return "Server Connection error";
+            } else {
+                GetUserInfo getUserInfo = new GetUserInfo();
+                getUserInfo.parseJSONFromServer(execute);
+                return "Successful";
+            }
+            //--------server connection---------
 //        String pass = accounts.get(login);
 //        System.out.println(pass);
 //        if(password.equals(pass)){
@@ -172,6 +180,7 @@ public class LoginActivity extends AppCompatActivity{
 //            Toast.makeText(LoginActivity.this, "Такого пользователя не существует.", Toast.LENGTH_SHORT).show();
 //            return false;
 //        }
+        }
     }
 
     private void addAccounts() {
@@ -209,8 +218,8 @@ public class LoginActivity extends AppCompatActivity{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            String s = (sanyadebil ? "Online" : "Offline");
-            Toast.makeText(LoginActivity.this, s, Toast.LENGTH_SHORT).show();
+//            String s = (sanyadebil ? "Online" : "Offline");
+//            Toast.makeText(LoginActivity.this, s, Toast.LENGTH_SHORT).show();
             if(sanyadebil) {
                 login = loginText.getText().toString();
                 password = passwordTxt.getText().toString();
